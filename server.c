@@ -26,30 +26,26 @@
 
 static int lib_prehooks(struct lib *lib)
 {
-	// pre exectution here crd
 	/* TODO: Implement lib_prehooks(). */
 	return 0;
 }
 
 static int lib_load(struct lib *lib)
 {
-	// char* mere="/home/student/hackkk/operating-systems/content/assignments/lambda-function-loader/tests";
-	// printf("++ %s ++",lib->filename);
 	lib->handle = dlopen(lib->libname, RTLD_LAZY);
 	if (!lib->handle)
 	{
 		fprintf(stderr, "Error loading library: %s\n", dlerror());
 		return -1;
 	}
-	// else printf("nu exista vere");
-
+	
 	return 0;
+
 }
 
 static int lib_execute(struct lib *lib)
 {
 	/* TODO: Implement lib_execute(). */
-	// Call the function
 
 	if (lib->filename == NULL)
 	{
@@ -57,57 +53,41 @@ static int lib_execute(struct lib *lib)
 
 		if (lib->run != NULL)
 			lib->run();
-		else
-			printf("DADA");
 	}
 	else
 	{
 		lib->p_run = (lambda_param_func_t)dlsym(lib->handle, lib->funcname);
-		// printf("ceva??");
 		if (lib->p_run != NULL)
 		{
 			lib->p_run(lib->filename);
 		}
 		else
 		{
-			char *mere = malloc(523);
-			memset(mere, 0, 523);
-			mere = strcpy(mere, "Error: ");
-			mere = strcat(mere, lib->libname);
-			mere = strcat(mere, " ");
-			mere = strcat(mere, lib->funcname);
-			if (strcmp(lib->filename, ""))
-			{
-				mere = strcat(mere, " ");
-				mere = strcat(mere, lib->filename);
-			}
-			mere = strcat(mere, " could not be executed.\n");
-			printf(mere);
+			char errorMessage[523];
+			snprintf(errorMessage, sizeof(errorMessage), "Error: %s %s%s%s could not be executed.\n",
+			         lib->libname,
+			         lib->funcname,
+			         strcmp(lib->filename, "") ? " " : "",
+			         strcmp(lib->filename, "") ? lib->filename : "");
+			         
+			printf("%s", errorMessage);
 			fflush(stdout);
 			sleep(0.2);
 		}
-		// printf("%s", "Error: /home/student/hackkk/operating-systems/content/assignments/lambda-function-loader/tests/libbasic.so solve all_my_problems could not be executed.\n");
 	}
-	// aici verific daca nu am functname?
-	// Add any other operations you need to perform
-	// printf("a\n");
-	// fclose(lib->handle);
+	
 	return 0;
 }
 
 static int lib_close(struct lib *lib)
 {
-	/* TODO: Implement lib_close(). */
-
-	// printf("V\n");
 	close(lib->handle);
-	// printf("a\n");
 	return 0;
+
 }
 
 static int lib_posthooks(struct lib *lib)
 {
-	/* TODO: Implement lib_posthooks(). */
 	return 0;
 }
 
@@ -196,7 +176,6 @@ int main(void)
 		int slot = -1;
 		for (int i = 0; i < 2024; ++i)
 		{
-			// printf("%s", "aaa");
 			if (workers[i] == 0)
 			{
 				slot = i;
@@ -239,26 +218,19 @@ int main(void)
 
 				if (ret < 0)
 				{
-					char *mere = malloc(523);
-					memset(mere, 0, 523);
-					mere = strcpy(mere, "Error: ");
-					mere = strcat(mere, lib.libname);
-					mere = strcat(mere, " ");
-					mere = strcat(mere, lib.funcname);
-					if (strcmp(lib.filename, ""))
-					{
-						mere = strcat(mere, " ");
-						mere = strcat(mere, lib.filename);
-					}
-					mere = strcat(mere, " could not be executed.\n");
-					printf(mere);
+					char errorMessage[523];
+					snprintf(errorMessage, sizeof(errorMessage), "Error: %s %s%s%s could not be executed.\n",
+					         lib->libname,
+					         lib->funcname,
+					         strcmp(lib->filename, "") ? " " : "",
+					         strcmp(lib->filename, "") ? lib->filename : "");
+					         
+					printf("%s", errorMessage);
 					fflush(stdout);
 					sleep(0.2);
-					// printf("Error: /home/student/hackkk/operating-systems/content/assignments/lambda-function-loader/tests/libfictional.so solve all_my_problems could not be executed.\n");
+
 				}
 				int vari = write(client_socket, lib.outputfile, strlen(lib.outputfile));
-				// printf("caa \n");
-				// fprintf(stderr,"%s","aaa");
 				if (vari < 0)
 					perror("write");
 				exit(0);
